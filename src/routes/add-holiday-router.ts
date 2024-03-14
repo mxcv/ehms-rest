@@ -6,7 +6,7 @@ import { HolidayRequest, HolidayRules } from '../models.js';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.render('add-holiday.ejs', { employees: employeeRepository.getAll() });
+    res.render('add-holiday.ejs', { employees: employeeRepository.readAll() });
 })
 
 router.post('/', (req, res) => {
@@ -18,8 +18,8 @@ router.post('/', (req, res) => {
         status: 'pending',
         employeeId: +req.body.employeeId
     };
-    holidayRequest.status = checkHolidayRequest(holidayRequest, holidayRulesRepository.get()) ? 'approved' : 'pending';
-    holidayRequestRepository.add(holidayRequest);
+    holidayRequest.status = checkHolidayRequest(holidayRequest, holidayRulesRepository.read()) ? 'approved' : 'pending';
+    holidayRequestRepository.create(holidayRequest);
     res.redirect('/holidays');
 })
 
