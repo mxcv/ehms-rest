@@ -1,21 +1,22 @@
-import { Employee, HolidayRequest, HolidayRequestStatus, HolidayRules } from '../models.js'
+import { Employee, HolidayRequest, HolidayRules } from '../models.js'
 
 interface EmployeeRepository {
-    getAll(): Employee[];
-    getById(id: number): Employee;
-    add(employee: Employee): void;
+    create(employee: Employee): void;
+    readAll(): Employee[];
+    joinWithHolidayRequests(holidayRequests: HolidayRequest[]): void;
 }
 
 interface HolidayRequestRepository {
-    getPending(): HolidayRequest[];
-    getApprovedByEmployeeId(employeeId: number): HolidayRequest[];
-    add(holidayRequest: HolidayRequest): void;
-    setStatus(id: number, status: HolidayRequestStatus): void;
+    create(holidayRequest: HolidayRequest): void;
+    readAll(): HolidayRequest[];
+    update(holidayRequest: HolidayRequest): void;
+    delete(id: number): void;
+    joinApprovedWithEmployees(employees: Employee[]): void;
 }
 
 interface HolidayRulesRepository {
-    get(): HolidayRules;
-    set(holidayRules: HolidayRules) : void;
+    read(): HolidayRules;
+    update(holidayRules: HolidayRules) : void;
 }
 
 interface HolidayManagmentRepositoryFactory {

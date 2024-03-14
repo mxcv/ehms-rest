@@ -1,22 +1,22 @@
-import dayjs from 'dayjs';
-import { Employee, HolidayRequest, HolidayRequestStatus, HolidayRules } from '../models.js';
+import { Employee, HolidayRequest, HolidayRules } from '../models.js';
 import { EmployeeRepository, HolidayRequestRepository, HolidayRulesRepository, HolidayManagmentRepositoryFactory } from './repositories.js';
 
 class EmployeeRepositoryInMemory implements EmployeeRepository {
     private employees: Employee[] = [];
     private lastId = 0;
 
-    getAll(): Employee[] {
+    create(employee: Employee): void {
+        employee.id = ++this.lastId;
+        this.employees.push(employee);
+    }
+
+    readAll(): Employee[] {
         return this.employees;
     }
 
-    getById(id: number): Employee {
-        return this.employees.find(e => e.id === id);
-    }
-
-    add(employee: Employee): void {
-        employee.id = ++this.lastId;
-        this.employees.push(employee);
+    joinWithHolidayRequests(holidayRequests: HolidayRequest[]): void {
+        for (const request of holidayRequests)
+            request.employee = this.employees.find(e => e.id === request.employeeId);
     }
 }
 
@@ -24,43 +24,38 @@ class HolidayRequestRepositoryInMemory implements HolidayRequestRepository {
     private holidayRequests: HolidayRequest[] = [];
     private lastId = 0;
 
-    getPending(): HolidayRequest[] {
-        return this.holidayRequests.filter(r => r.status === 'pending');
-    }
-
-    getApprovedByEmployeeId(employeeId: number): HolidayRequest[] {
-        return this.holidayRequests.filter(r => r.employeeId === employeeId && r.status === 'approved');
-    }
-
-    add(holidayRequest: HolidayRequest): void {
+    create(holidayRequest: HolidayRequest): void {
         holidayRequest.id = ++this.lastId;
         this.holidayRequests.push(holidayRequest);
     }
 
-    setStatus(id: number, status: HolidayRequestStatus): void {
-        this.holidayRequests.find(r => r.id === id).status = status;
+    readAll(): HolidayRequest[] {
+        return this.holidayRequests;
+    }
+
+    update(holidayRequest: HolidayRequest): void {
+        const index = this.holidayRequests.findIndex(r => r.id === holidayRequest.id);
+        holidayRequest[index] = holidayRequest;
+    }
+
+    delete(id: number): void {
+        this.holidayRequests.splice(this.holidayRequests.findIndex(r => r.id === id), 1);
+    }
+
+    joinApprovedWithEmployees(employees: Employee[]): void {
+        for (const employee of employees)
+            employee.holidays = this.holidayRequests.filter(r => r.employeeId === employee.id && r.status === 'approved');
     }
 }
 
 class HolidayRulesRepositoryInMemory implements HolidayRulesRepository {
-    private holidayRules: HolidayRules;
+    private holidayRules: HolidayRules = null;
 
-    constructor() {
-        // default value
-        this.holidayRules = {
-            maxConsecutiveDays: 20,
-            blackoutPeriods: [
-                { from: dayjs.utc('2024-04-01'), to: dayjs.utc('2024-04-30') },
-                { from: dayjs.utc('2024-09-01'), to: dayjs.utc('2024-09-30') }
-            ]
-        };
-    }
-
-    get(): HolidayRules {
+    read(): HolidayRules {
         return this.holidayRules;
     }
 
-    set(holidayRules: HolidayRules): void {
+    update(holidayRules: HolidayRules): void {
         this.holidayRules = holidayRules;
     }
 }
@@ -77,4 +72,4 @@ class HolidayManagmentRepositoryInMemoryFactory implements HolidayManagmentRepos
     }
 }
 
-export { HolidayManagmentRepositoryInMemoryFactory }
+export default HolidayManagmentRepositoryInMemoryFactory

@@ -1,12 +1,14 @@
 import express from 'express';
-import { employeeRepository, holidayRequestRepository } from '../app.js';
+import { employeeRepository, holidayRequestRepository } from '../repositories/repositories-config.js';
 
 const router = express.Router();
 
 function changeStatus(req, res, newStatus) {
     const requestId = Number(req.params.id);
     try {
-        holidayRequestRepository.setStatus(requestId, newStatus);
+        const holidayRequest = holidayRequestRepository.readAll().find(r => r.id === requestId);
+        holidayRequest.status = newStatus;
+        holidayRequestRepository.update(holidayRequest);
         res.redirect('/holidays');
     } catch (error) {
         console.error(`Error changing holiday request status to ${newStatus}:`, error);
@@ -15,9 +17,8 @@ function changeStatus(req, res, newStatus) {
 }
 
 router.get('/', (req, res) => {
-    const holidayRequests = holidayRequestRepository.getPending();
-    for (let holidayRequest of holidayRequests)
-        holidayRequest.employee = employeeRepository.getById(holidayRequest.employeeId);
+    const holidayRequests = holidayRequestRepository.readAll().filter(r => r.status === 'pending');
+    employeeRepository.joinWithHolidayRequests(holidayRequests);
     res.render('holidays.ejs', { holidayRequests });
 });
 

@@ -1,17 +1,16 @@
 import express from 'express';
-import { employeeRepository, holidayRequestRepository } from '../app.js';
+import { employeeRepository, holidayRequestRepository } from '../repositories/repositories-config.js';
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    let employees = employeeRepository.getAll();
-    for (let employee of employees)
-        employee.holidays = holidayRequestRepository.getApprovedByEmployeeId(employee.id);
+    const employees = employeeRepository.readAll();
+    holidayRequestRepository.joinApprovedWithEmployees(employees);
     res.render('employees.ejs', { employees })
 })
 
 router.post('/', (req, res) => {
-    employeeRepository.add({ name: req.body.name });
+    employeeRepository.create({ name: req.body.name });
     res.redirect('/employees');
 })
 
