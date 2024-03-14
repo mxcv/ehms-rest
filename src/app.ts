@@ -20,6 +20,7 @@ app.get('/', (req, res) => res.render('index.ejs'));
 app.use('/employees', (req, res) => res.render('employees.ejs'));
 app.use('/requests', (req, res) => res.render('requests.ejs'));
 app.use('/add-request', (req, res) => res.render('add-request.ejs'));
+app.use('/update-request/:id', (req, res) => res.render('update-request.ejs', { id: req.params.id }));
 
 app.use('/api/employees', employeeRouter);
 app.use('/api/requests', requestRouter);
