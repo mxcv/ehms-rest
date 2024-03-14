@@ -1,0 +1,41 @@
+<%- include('templates/header.ejs') %>
+
+<h1>Holiday Requests</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Period</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% holidayRequests.forEach(holidayRequest => { %>
+            <tr>
+                <td><%= holidayRequest.employee.name %></td>
+                <td><%= `${holidayRequest.period.from.format('YYYY-MM-DD')} ~ ${holidayRequest.period.to.format('YYYY-MM-DD')}` %></td>
+                <td><%= holidayRequest.status %></td>
+                <td>
+                    <% if (holidayRequest.status === 'pending') { %>
+                        <form method="post" action="/holidays/<%= holidayRequest.id %>/approve">
+                            <button type="submit">Approve</button>
+                        </form>
+                        <form method="post" action="/holidays/<%= holidayRequest.id %>/reject">
+                            <button type="submit">Reject</button>
+                        </form>
+                    <% } else { %>
+                        <span>N/A</span>
+                    <% } %>
+                </td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+
+<form method="get" action="/holidays">
+    <button type="submit">Refresh</button>
+</form>
+
+<%- include('templates/footer.ejs') %>

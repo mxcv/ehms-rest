@@ -1,0 +1,26 @@
+<%- include('templates/header.ejs') %>
+<h1>Employees</h1>
+<form method="post">
+    <label>
+        <span>Name:</span>
+        <input name="name" />
+    </label>
+    <button type="submit">Add</button>
+</form>
+<table>
+    <tr>
+        <th>Employee</th>
+        <th>Remaining holidays</th>
+    </tr>
+    <% employees.map((e)=>{ %>
+        <tr>
+            <td><%= e.name %></td>
+            <td>
+                <% e.holidays.map((h)=>{ %>
+                    <div><%= `${h.period.from.format('YYYY-MM-DD')} ~ ${h.period.to.format('YYYY-MM-DD')}` %></div>
+                <% }) %>
+            </td>
+        </tr>
+    <% }) %>
+</table>
+<%- include('templates/footer.ejs') %>

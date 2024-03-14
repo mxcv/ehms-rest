@@ -1,0 +1,25 @@
+<%- include('templates/header.ejs') %>
+<h1>Add holiday</h1>
+<form method="post">
+    <label>
+        <sapn>Start date:</sapn>
+        <input name="startDate" type="date" required />
+    </label>
+    <br />
+    <label>
+        <sapn>End date:</sapn>
+        <input name="endDate" type="date" required />
+    </label>
+    <br />
+    <label>
+        <span>Employee:</span>
+        <select name="employeeId" required>
+            <% employees.map((e)=>{ %>
+                <option value="<%= e.id %>"><%= e.name %></option>
+            <% }) %>
+        </select>
+    </label>
+    <br />
+    <button type="submit">Add</button>
+</form>
+<%- include('templates/footer.ejs') %>
