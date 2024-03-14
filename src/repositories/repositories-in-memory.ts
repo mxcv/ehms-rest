@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { Employee, HolidayRequest, HolidayRules } from '../models.js';
 import { EmployeeRepository, HolidayRequestRepository, HolidayRulesRepository, HolidayManagmentRepositoryFactory } from './repositories.js';
 
@@ -50,18 +49,7 @@ class HolidayRequestRepositoryInMemory implements HolidayRequestRepository {
 }
 
 class HolidayRulesRepositoryInMemory implements HolidayRulesRepository {
-    private holidayRules: HolidayRules;
-
-    constructor() {
-        // default value
-        this.holidayRules = {
-            maxConsecutiveDays: 20,
-            blackoutPeriods: [
-                { from: dayjs.utc('2024-04-01'), to: dayjs.utc('2024-04-30') },
-                { from: dayjs.utc('2024-09-01'), to: dayjs.utc('2024-09-30') }
-            ]
-        };
-    }
+    private holidayRules: HolidayRules = null;
 
     read(): HolidayRules {
         return this.holidayRules;
@@ -84,4 +72,4 @@ class HolidayManagmentRepositoryInMemoryFactory implements HolidayManagmentRepos
     }
 }
 
-export { HolidayManagmentRepositoryInMemoryFactory }
+export default HolidayManagmentRepositoryInMemoryFactory

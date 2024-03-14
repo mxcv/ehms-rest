@@ -1,5 +1,5 @@
 import express from 'express';
-import { employeeRepository, holidayRequestRepository } from '../app.js';
+import { employeeRepository, holidayRequestRepository } from '../repositories/repositories-config.js';
 
 const router = express.Router();
 

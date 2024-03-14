@@ -1,6 +1,6 @@
 import express from 'express';
 import dayjs from 'dayjs';
-import { employeeRepository, holidayRequestRepository, holidayRulesRepository } from '../app.js';
+import { employeeRepository, holidayRequestRepository, holidayRulesRepository } from '../repositories/repositories-config.js';
 import { HolidayRequest, HolidayRules } from '../models.js';
 
 const router = express.Router();
