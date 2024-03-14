@@ -1,0 +1,46 @@
+<%- include('templates/header.ejs') %>
+<h1>Holiday Requests</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="request-container"></tbody>
+</table>
+<script>
+    function createElementWithAttributes(tag, attributes) {
+        const element = document.createElement(tag);
+        for (const attribute in attributes)
+            element[attribute] = attributes[attribute];
+        return element;
+    }
+    fetch('/api/requests')
+        .then((response) => response.json())
+        .then((data) => {
+            const requestContainer = document.getElementById('request-container');
+            for (const request of data) {
+                const row = document.createElement('tr');
+                row.appendChild(createElementWithAttributes('td', { textContent: request.employee.name }));
+                row.appendChild(createElementWithAttributes('td', { textContent: request.period.from.substring(0, 10) }));
+                row.appendChild(createElementWithAttributes('td', { textContent: request.period.to.substring(0, 10) }));
+                row.appendChild(createElementWithAttributes('td', { textContent: request.status }));
+                const actions = document.createElement('td');
+                actions.appendChild(createElementWithAttributes('button', {
+                    textContent: 'Update',
+                    onclick: () => location.href = '/update-request?id=' + request.id
+                }));
+                actions.appendChild(createElementWithAttributes('button', {
+                    textContent: 'Delete',
+                    onclick: () => fetch('/api/requests/' + request.id, { method: 'DELETE' }).then(() => location.reload())
+                }));
+                row.appendChild(actions);
+                requestContainer.appendChild(row);
+            }
+        });
+</script>
+<%- include('templates/footer.ejs') %>
