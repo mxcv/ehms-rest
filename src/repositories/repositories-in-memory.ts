@@ -39,7 +39,7 @@ class HolidayRequestRepositoryInMemory implements HolidayRequestRepository {
 
     update(holidayRequest: HolidayRequest): void {
         const index = this.holidayRequests.findIndex(r => r.id === holidayRequest.id);
-        holidayRequest[index] = holidayRequest;
+        this.holidayRequests[index] = holidayRequest;
     }
 
     delete(id: number): void {

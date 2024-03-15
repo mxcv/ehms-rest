@@ -37,6 +37,7 @@
                 from: document.getElementById('start-date-input').value,
                 to: document.getElementById('end-date-input').value
             },
+            status: document.getElementById('status-select').value,
             employeeId: +document.getElementById('employee-select').value
         };
         fetch('/api/requests/' + id, {
@@ -57,7 +58,7 @@
                 employeeSelect.appendChild(option);
             }
             if (loadedEmployeeId !== undefined)
-                document.getElementById('employee-select').value = String(employeeId);
+                document.getElementById('employee-select').value = String(loadedEmployeeId);
         });
     fetch('/api/requests/' + id)
         .then(response => response.json())
