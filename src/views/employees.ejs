@@ -1,67 +1,26 @@
 <%- include('templates/header.ejs') %>
-<h1>Employee List</h1>
+<h1>Employees</h1>
+<form method="post">
+    <label>
+        <span>Name:</span>
+        <input name="name" />
+    </label>
+    <button type="submit">Add</button>
+</form>
 <table>
-    <thead>
+    <tr>
+        <th>Employee</th>
+        <th>Remaining holidays</th>
+    </tr>
+    <% employees.map((e)=>{ %>
         <tr>
-            <th>Name</th>
-            <th>Remaining Holidays</th>
+            <td><%= e.name %></td>
+            <td>
+                <% e.holidays.map((h)=>{ %>
+                    <div><%= `${h.period.from.format('YYYY-MM-DD')} ~ ${h.period.to.format('YYYY-MM-DD')}` %></div>
+                <% }) %>
+            </td>
         </tr>
-    </thead>
-    <tbody id="employee-container"></tbody>
+    <% }) %>
 </table>
-<div>
-    <input type="text" id="employee-name" />
-    <button onclick="addEmployee()">Add Employee</button>
-</div>
-
-<script>
-    function addEmployee() {
-        const employeeNameInput = document.getElementById('employee-name');
-        const employeeName = employeeNameInput.value;
-        const employeeContainer = document.getElementById('employee-container');
-
-        fetch('/api/employees', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name: employeeName })
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        })
-        .then(() => {
-            location.reload();
-        });
-    }
-    
-    fetch('/api/employees?joinHolidays=true')
-        .then((response) => response.json())
-        .then((data) => {
-            const employeeContainer = document.getElementById('employee-container');
-            data.forEach((employee) => {
-                const row = document.createElement('tr');
-
-                const nameCell = document.createElement('td');
-                nameCell.textContent = employee.name;
-                row.appendChild(nameCell);
-                const holidaysCell = document.createElement('td');
-
-                if (employee.holidays && employee.holidays.length > 0) {
-                    const holidaysList = document.createElement('ul');
-                    employee.holidays.forEach((holiday) => {
-                        const holidayItem = document.createElement('li');
-                        holidayItem.textContent = `${holiday.period.from.substring(0, 10)} - ${holiday.period.to.substring(0, 10)}`;
-                        holidaysList.appendChild(holidayItem);
-                    });
-                    holidaysCell.appendChild(holidaysList);
-                } else {
-                    holidaysCell.textContent = 'No approved holidays';
-                }
-                row.appendChild(nameCell);
-                row.appendChild(holidaysCell);
-                employeeContainer.appendChild(row);
-            });
-        });
-</script>
 <%- include('templates/footer.ejs') %>
