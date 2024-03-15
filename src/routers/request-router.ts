@@ -11,6 +11,10 @@ router.get('/', (req, res) => {
     return res.json(holidayRequests);
 });
 
+router.get('/:id', (req, res) => {
+    return res.json(holidayRequestRepository.readById(+req.params.id));
+});
+
 router.post('/', (req, res) => {
     const holiday: HolidayRequest = {
         period: {
