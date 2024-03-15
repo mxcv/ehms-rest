@@ -27,29 +27,14 @@
             },
             body: JSON.stringify({ name: employeeName })
         })
-        .then(response => response.json())
-        .then(data => {
-            const row = document.createElement('tr');
-
-            const nameCell = document.createElement('td');
-            nameCell.textContent = data.name;
-            row.appendChild(nameCell);
-
-            const holidaysCell = document.createElement('td');
-            holidaysCell.textContent = 'No holidays';
-            row.appendChild(holidaysCell);
-
-            employeeContainer.appendChild(row);
-        })
         .catch(error => {
             console.error('Error:', error);
         })
-        .finally(() => {
+        .then(() => {
             employeeNameInput.value = '';
             location.reload();
         });
     }
-    
     
     fetch('/api/employees?joinHolidays=true')
         .then((response) => response.json())
