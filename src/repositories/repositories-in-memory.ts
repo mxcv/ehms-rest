@@ -16,7 +16,9 @@ class EmployeeRepositoryInMemory implements EmployeeRepository {
 
     joinWithHolidayRequests(holidayRequests: HolidayRequest[]): void {
         for (const request of holidayRequests)
-            request.employee = this.employees.find(e => e.id === request.employeeId);
+            request.employee = this.employees
+                .map(e => ({ id: e.id, name: e.name }))
+                .find(e => e.id === request.employeeId);
     }
 }
 
@@ -48,7 +50,9 @@ class HolidayRequestRepositoryInMemory implements HolidayRequestRepository {
 
     joinApprovedWithEmployees(employees: Employee[]): void {
         for (const employee of employees)
-            employee.holidays = this.holidayRequests.filter(r => r.employeeId === employee.id && r.status === 'approved');
+            employee.holidays = this.holidayRequests
+                .map(r => ({ id: r.id, period: r.period, status: r.status, employeeId: r.employeeId }))
+                .filter(r => r.employeeId === employee.id && r.status === 'approved');
     }
 }
 
