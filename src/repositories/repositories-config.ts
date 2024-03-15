@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
-import HolidayManagmentRepositoryInMemoryFactory from './repositories-in-memory.js';
+import HolidayManagmentFileRepositoryFactory from './repositories-in-fs.js';
 
-const repositoryFactory = new HolidayManagmentRepositoryInMemoryFactory();
+const repositoryFactory = new HolidayManagmentFileRepositoryFactory();
 const employeeRepository = repositoryFactory.createEmployeeRepository();
 const holidayRequestRepository = repositoryFactory.createHolidayRequestRepository();
 const holidayRulesRepository = repositoryFactory.createHolidayRulesRepository();
