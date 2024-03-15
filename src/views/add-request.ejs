@@ -18,7 +18,18 @@
     <br />
     <button type="submit">Add</button>
 </form>
+<h1>Public holidays</h1>
+<label>
+    <span>Country:</span>
+    <select id="country-select"></select>
+</label>
+<ul id="public-holadys-container"></ul>
+<button id="load-holidays" type="button">Load more</button>
 <script>
+    let currentYear = new Date().getFullYear();
+    const defaultCountryCode = 'UA';
+    fetchPublicHolidays();
+
     document.getElementById('main-form').onsubmit = e => {
         e.preventDefault();
         const request = {
@@ -34,7 +45,13 @@
                 body: JSON.stringify(request)
             })
             .then(() => location.href = '/requests');
-    }
+    };
+    document.getElementById('load-holidays').onclick = e => fetchPublicHolidays();
+    document.getElementById('country-select').onchange = e => {
+        currentYear = new Date().getFullYear();
+        document.getElementById('public-holadys-container').textContent = '';
+        fetchPublicHolidays();
+    };
     fetch('/api/employees')
         .then(response => response.json())
         .then(data => {
@@ -46,5 +63,38 @@
                 employeeSelect.appendChild(option);
             }
         });
+    fetch('/countries.json')
+        .then(response => response.json())
+        .then(data => {
+            const countriesSelect = document.getElementById('country-select');
+            for (const country of data) {
+                const option = document.createElement('option');
+                option.value = country.code;
+                option.textContent = country.name;
+                countriesSelect.appendChild(option);
+            }
+            countriesSelect.value = defaultCountryCode;
+        });
+    function fetchPublicHolidays() {
+        let countryCode = document.getElementById('country-select').value;
+        if (!countryCode)
+            countryCode = defaultCountryCode;
+        fetch(`/api/public-holidays/${currentYear}/${countryCode}`)
+            .then(response => response.json())
+            .then(holidays => {
+                if (new Date().getFullYear() === currentYear)
+                    holidays = holidays.filter(h => new Date(h.date) > new Date());
+                const yearElement = document.createElement('li');
+                yearElement.textContent = currentYear++;
+                const holidayListElement = document.createElement('ul');
+                for (const holiday of holidays) {
+                    const holidayElement = document.createElement('li');
+                    holidayElement.textContent = `${new Date(holiday.date).toLocaleDateString(undefined, { day: '2-digit', month: '2-digit' })} ~ ${holiday.name}`;
+                    holidayListElement.appendChild(holidayElement);
+                }
+                yearElement.appendChild(holidayListElement);
+                document.getElementById('public-holadys-container').appendChild(yearElement);
+            })
+    }
 </script>
 <%- include('templates/footer.ejs') %>

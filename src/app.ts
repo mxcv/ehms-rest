@@ -1,6 +1,7 @@
 import express from 'express';
 import employeeRouter from './routers/employee-router.js';
 import requestRouter from './routers/request-router.js';
+import publicHolidaysRouter from './routers/public-holidays-router.js';
 import util from 'util';
 
 const app = express();
@@ -8,6 +9,7 @@ const port = 3000;
 
 app.use(express.json());
 
+app.use(express.static('./src/public'));
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
@@ -24,5 +26,6 @@ app.use('/update-request/:id', (req, res) => res.render('update-request.ejs', { 
 
 app.use('/api/employees', employeeRouter);
 app.use('/api/requests', requestRouter);
+app.use('/api/public-holidays', publicHolidaysRouter);
 
 app.listen(port, () => console.log(`Listening on ${port}...`));
