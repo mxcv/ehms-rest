@@ -5,13 +5,20 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
     const employees = employeeRepository.readAll();
-    holidayRequestRepository.joinApprovedWithEmployees(employees);
-    res.render('employees.ejs', { employees })
-})
+    if (req.query.joinHolidays)
+        holidayRequestRepository.joinApprovedWithEmployees(employees);
+    return res.json(employees);
+});
 
-router.post('/', (req, res) => {
-    employeeRepository.create({ name: req.body.name });
-    res.redirect('/employees');
-})
+// router.get('/', (req, res) => {
+//     const employees = employeeRepository.readAll();
+//     holidayRequestRepository.joinApprovedWithEmployees(employees);
+//     res.render('employees.ejs', { employees })
+// })
+
+// router.post('/', (req, res) => {
+//     employeeRepository.create({ name: req.body.name });
+//     res.redirect('/employees');
+// })
 
 export default router;
