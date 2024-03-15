@@ -10,19 +10,15 @@ router.get('/', (req, res) => {
     return res.json(employees);
 });
 
-router.post('/', (req, res) => {
-    try {
-        const { name } = req.body;
-        if (!name) {
-            return res.status(400).json({ error: 'Name is required' });
-        }
+// router.get('/', (req, res) => {
+//     const employees = employeeRepository.readAll();
+//     holidayRequestRepository.joinApprovedWithEmployees(employees);
+//     res.render('employees.ejs', { employees })
+// })
 
-        const newEmployee = employeeRepository.create({ name });
-
-        return res.status(201).json(newEmployee);
-    } catch (error) {
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+// router.post('/', (req, res) => {
+//     employeeRepository.create({ name: req.body.name });
+//     res.redirect('/employees');
+// })
 
 export default router;
