@@ -6,22 +6,46 @@ import { HolidayRequest, HolidayRules } from '../models.js';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.render('add-holiday.ejs', { employees: employeeRepository.readAll() });
-})
+    const holidayRequests = holidayRequestRepository.readAll();
+    employeeRepository.joinWithHolidayRequests(holidayRequests);
+    return res.json(holidayRequests);
+});
+
+router.get('/:id', (req, res) => {
+    return res.json(holidayRequestRepository.readById(+req.params.id));
+});
 
 router.post('/', (req, res) => {
-    const holidayRequest: HolidayRequest = {
+    const holiday: HolidayRequest = {
         period: {
-            from: dayjs.utc(req.body.startDate),
-            to: dayjs.utc(req.body.endDate)
+            from: dayjs.utc(req.body.period.from),
+            to: dayjs.utc(req.body.period.to)
         },
         status: 'pending',
         employeeId: +req.body.employeeId
-    };
-    holidayRequest.status = checkHolidayRequest(holidayRequest, holidayRulesRepository.read()) ? 'approved' : 'pending';
-    holidayRequestRepository.create(holidayRequest);
-    res.redirect('/holidays');
-})
+    }
+    holiday.status = checkHolidayRequest(holiday, holidayRulesRepository.read()) ? 'approved' : 'pending';
+    holidayRequestRepository.create(holiday);
+    res.sendStatus(201);
+});
+
+router.put('/:id', (req, res) => {
+    holidayRequestRepository.update({
+        id: +req.params.id,
+        period: {
+            from: dayjs.utc(req.body.period.from),
+            to: dayjs.utc(req.body.period.to)
+        },
+        status: req.body.status,
+        employeeId: +req.body.employeeId
+    });
+    res.send();
+});
+
+router.delete('/:id', (req, res) => {
+    holidayRequestRepository.delete(+req.params.id);
+    res.send();
+});
 
 function checkHolidayRequest(holidayRequest: HolidayRequest, holidayRules: HolidayRules): boolean {
     if (holidayRequest.period.to.diff(holidayRequest.period.from, 'day') > holidayRules.maxConsecutiveDays)
@@ -34,6 +58,5 @@ function checkHolidayRequest(holidayRequest: HolidayRequest, holidayRules: Holid
             return false;
     return true;
 }
-
 
 export default router;

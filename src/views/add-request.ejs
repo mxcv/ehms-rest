@@ -1,0 +1,50 @@
+<%- include('templates/header.ejs') %>
+<h1>Add holiday request</h1>
+<form id="main-form">
+    <label>
+        <sapn>Start date:</sapn>
+        <input id="start-date-input" type="date" required />
+    </label>
+    <br />
+    <label>
+        <sapn>End date:</sapn>
+        <input id="end-date-input" type="date" required />
+    </label>
+    <br />
+    <label>
+        <span>Employee:</span>
+        <select id="employee-select" required></select>
+    </label>
+    <br />
+    <button type="submit">Add</button>
+</form>
+<script>
+    document.getElementById('main-form').onsubmit = e => {
+        e.preventDefault();
+        const request = {
+            period: {
+                from: document.getElementById('start-date-input').value,
+                to: document.getElementById('end-date-input').value
+            },
+            employeeId: +document.getElementById('employee-select').value
+        };
+        fetch('/api/requests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(request)
+            })
+            .then(() => location.href = '/requests');
+    }
+    fetch('/api/employees')
+        .then(response => response.json())
+        .then(data => {
+            const employeeSelect = document.getElementById('employee-select');
+            for (const employee of data) {
+                const option = document.createElement('option');
+                option.value = employee.id;
+                option.textContent = employee.name;
+                employeeSelect.appendChild(option);
+            }
+        });
+</script>
+<%- include('templates/footer.ejs') %>

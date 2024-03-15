@@ -9,6 +9,7 @@ interface EmployeeRepository {
 interface HolidayRequestRepository {
     create(holidayRequest: HolidayRequest): void;
     readAll(): HolidayRequest[];
+    readById(id: number): HolidayRequest;
     update(holidayRequest: HolidayRequest): void;
     delete(id: number): void;
     joinApprovedWithEmployees(employees: Employee[]): void;
