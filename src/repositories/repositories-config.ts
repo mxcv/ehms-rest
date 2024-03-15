@@ -16,12 +16,6 @@ holidayRulesRepository.update({
     ]
 });
 
-employeeRepository.create({id: 1, name: 'John'});
-employeeRepository.create({id: 2, name: 'Michael'});
-holidayRequestRepository.create({id: 1, period: {from: dayjs.utc('2024-01-01'), to: dayjs.utc('2024-01-20')}, status: 'pending', employeeId: 1});
-holidayRequestRepository.create({id: 2, period: {from: dayjs.utc('2024-02-01'), to: dayjs.utc('2024-02-20')}, status: 'approved', employeeId: 1});
-holidayRequestRepository.create({id: 3, period: {from: dayjs.utc('2024-03-01'), to: dayjs.utc('2024-03-20')}, status: 'rejected', employeeId: 2});
-
 export {
     employeeRepository,
     holidayRequestRepository,
