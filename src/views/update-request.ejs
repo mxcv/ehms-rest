@@ -1,5 +1,5 @@
 <%- include('templates/header.ejs') %>
-<h1>Add holiday request</h1>
+<h1>Update holiday request</h1>
 <form id="main-form">
     <label>
         <sapn>Start date:</sapn>
@@ -16,9 +16,20 @@
         <select id="employee-select" required></select>
     </label>
     <br />
-    <button type="submit">Add</button>
+    <label>
+        <span>Status:</span>
+        <select id="status-select" required>
+            <option value="pending">pending</option>
+            <option value="approved">approved</option>
+            <option value="rejected">rejected</option>
+        </select>
+    </label>
+    <br />
+    <button type="submit">Update</button>
 </form>
 <script>
+    const id = <%= id %>;
+    let loadedEmployeeId;
     document.getElementById('main-form').onsubmit = e => {
         e.preventDefault();
         const request = {
@@ -28,8 +39,8 @@
             },
             employeeId: +document.getElementById('employee-select').value
         };
-        fetch('/api/requests', {
-                method: 'POST',
+        fetch('/api/requests/' + id, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(request)
             })
@@ -45,6 +56,19 @@
                 option.textContent = employee.name;
                 employeeSelect.appendChild(option);
             }
+            if (loadedEmployeeId !== undefined)
+                document.getElementById('employee-select').value = String(employeeId);
+        });
+    fetch('/api/requests/' + id)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('start-date-input').value = data.period.from.substring(0, 10);
+            document.getElementById('end-date-input').value = data.period.to.substring(0, 10);
+            document.getElementById('status-select').value = data.status;
+            if (document.getElementById('employee-select').hasChildNodes())
+                document.getElementById('employee-select').value = String(data.employeeId);
+            else
+                loadedEmployeeId = data.employeeId;
         });
 </script>
 <%- include('templates/footer.ejs') %>

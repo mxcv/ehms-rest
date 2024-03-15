@@ -32,7 +32,7 @@
                 const actions = document.createElement('td');
                 actions.appendChild(createElementWithAttributes('button', {
                     textContent: 'Update',
-                    onclick: () => location.href = '/update-request?id=' + request.id
+                    onclick: () => location.href = '/update-request/' + request.id
                 }));
                 actions.appendChild(createElementWithAttributes('button', {
                     textContent: 'Delete',
